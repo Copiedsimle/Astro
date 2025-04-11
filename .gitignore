@@ -43,4 +43,9 @@ media/
 ggml-*
 
 # Environment variables
-.env 
+.env
+
+# Ephemeris data files
+*.se1
+ephem_data/
+astroweb/ephem_data/ 
