@@ -1,0 +1,14 @@
+.select-section {
+  background-color: #fff3cd;
+  padding: 15px;
+  border-left: 5px solid #ffc107;
+  margin-top: 20px;
+}
+
+.select-section h3 {
+  color: #ffc107;
+}
+
+.select-section p {
+  margin: 5px 0;
+}
