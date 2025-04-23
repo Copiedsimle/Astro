@@ -1,0 +1,107 @@
+.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="horoscope-content">
+            <h1>Your Daily Horoscope Guide</h1>
+            
+            <div class="horoscope-intro">
+                <h2>Understanding Your Daily Celestial Guidance</h2>
+                <p>Welcome to your personalized daily horoscope reading. The positions of celestial bodies at any given moment can provide profound insights into various aspects of your life. Our daily horoscopes are carefully crafted by expert astrologers who analyze the complex interactions between planets, stars, and cosmic energies to provide you with accurate and meaningful guidance.</p>
+            </div>
+
+            <div class="zodiac-selection">
+                <h3>Select Your Zodiac Sign</h3>
+                <p>Your zodiac sign, determined by your birth date, serves as a gateway to understanding how celestial movements influence your daily life, relationships, career, and personal growth.</p>
+                
+                <div class="sign-selector">
+                    <label for="sign">Choose your sign:</label>
+                    <select id="sign">
+                        <option value="aries">Aries (March 21 - April 19)</option>
+                        <option value="taurus">Taurus (April 20 - May 20)</option>
+                        <option value="gemini">Gemini (May 21 - June 20)</option>
+                        <option value="cancer">Cancer (June 21 - July 22)</option>
+                        <option value="leo">Leo (July 23 - August 22)</option>
+                        <option value="virgo">Virgo (August 23 - September 22)</option>
+                        <option value="libra">Libra (September 23 - October 22)</option>
+                        <option value="scorpio">Scorpio (October 23 - November 21)</option>
+                        <option value="sagittarius">Sagittarius (November 22 - December 21)</option>
+                        <option value="capricorn">Capricorn (December 22 - January 19)</option>
+                        <option value="aquarius">Aquarius (January 20 - February 18)</option>
+                        <option value="pisces">Pisces (February 19 - March 20)</option>
+                    </select>
+                    <button id="getHoroscope">Get Your Daily Horoscope</button>
+                </div>
+            </div>
+
+            <div id="result" class="horoscope-result"></div>
+
+            <div class="horoscope-explanation">
+                <h3>The Significance of Daily Horoscopes</h3>
+                <p>Daily horoscopes offer valuable insights into the cosmic energies influencing different aspects of your life. They serve as a spiritual compass, helping you navigate through daily challenges and opportunities. Understanding these celestial influences can help you make better decisions and maintain harmony in various life areas:</p>
+                
+                <ul>
+                    <li><strong>Personal Growth:</strong> Identify opportunities for self-improvement and personal development.</li>
+                    <li><strong>Relationships:</strong> Navigate social interactions and strengthen bonds with loved ones.</li>
+                    <li><strong>Career:</strong> Make informed decisions about professional opportunities and challenges.</li>
+                    <li><strong>Health:</strong> Understand when to focus on physical and mental well-being.</li>
+                    <li><strong>Finances:</strong> Recognize favorable periods for financial decisions and investments.</li>
+                </ul>
+
+                <h3>Understanding Planetary Influences</h3>
+                <p>Each day, the positions of celestial bodies create unique energy patterns that can affect different aspects of our lives. These influences include:</p>
+                
+                <ul>
+                    <li><strong>Sun:</strong> Represents your core identity and life purpose.</li>
+                    <li><strong>Moon:</strong> Influences emotions and subconscious patterns.</li>
+                    <li><strong>Mercury:</strong> Affects communication and intellectual activities.</li>
+                    <li><strong>Venus:</strong> Influences love, relationships, and material comforts.</li>
+                    <li><strong>Mars:</strong> Drives energy, motivation, and action.</li>
+                    <li><strong>Jupiter:</strong> Brings opportunities for growth and expansion.</li>
+                    <li><strong>Saturn:</strong> Represents discipline, responsibility, and life lessons.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('getHoroscope').addEventListener('click', async () => {
+            const sign = document.getElementById('sign').value;
+            try {
+                const response = await fetch(`/api/horoscope/${sign}`);
+                const data = await response.json();
+                
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `
+                    <div class="horoscope-reading">
+                        <h2>${sign.charAt(0).toUpperCase() + sign.slice(1)} Daily Horoscope</h2>
+                        <p class="date">Date: ${new Date().toLocaleDateString()}</p>
+                        <div class="horoscope-text">
+                            <p>${data.horoscope}</p>
+                        </div>
+                        <div class="daily-aspects">
+                            <h3>Daily Aspects</h3>
+                            <p>Lucky Color: ${data.color || 'Blue'}</p>
+                            <p>Lucky Number: ${data.number || '7'}</p>
+                            <p>Mood: ${data.mood || 'Optimistic'}</p>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <div class="error-message">
+                        <p>Unable to fetch horoscope at this time. Please try again later.</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

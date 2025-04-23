@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Horoscope</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div style="display: flex;">
+        <!-- Sidebar (Reusing existing sidebar from your webpage) -->
+        <div style="width: 200px; background-color: #4B0082; color: white; padding: 20px; height: 100vh;">
+            <h2>Astro</h2>
+            <ul style="list-style: none; padding: 0;">
+                <li><a href="/" style="color: white; text-decoration: none;">Daily Horoscopes</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">2025 Horoscope</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">Love</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">Tarot</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">Career</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">Money</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">Health</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">Chinese</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">Numerology</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">Free Psychic Reading</a></li>
+                <li><a href="#" style="color: white; text-decoration: none;">Premium Readings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div style="flex: 1; padding: 20px; background-color: #F5F5F5;">
+            <h1>Daily Horoscope</h1>
+            <p>Select your zodiac sign to view your daily horoscope.</p>
+
+            <!-- Zodiac Sign Selector -->
+            <div class="zodiac-signs">
+                <h2>Select Your Sign:</h2>
+                <div class="signs-grid">
+                    <button id="aries" class="sign-button">Aries</button>
+                    <button id="taurus" class="sign-button">Taurus</button>
+                    <button id="gemini" class="sign-button">Gemini</button>
+                    <button id="cancer" class="sign-button">Cancer</button>
+                    <button id="leo" class="sign-button">Leo</button>
+                    <button id="virgo" class="sign-button">Virgo</button>
+                    <button id="libra" class="sign-button">Libra</button>
+                    <button id="scorpio" class="sign-button">Scorpio</button>
+                    <button id="sagittarius" class="sign-button">Sagittarius</button>
+                    <button id="capricorn" class="sign-button">Capricorn</button>
+                    <button id="aquarius" class="sign-button">Aquarius</button>
+                    <button id="pisces" class="sign-button">Pisces</button>
+                </div>
+                <div id="horoscope-result" class="horoscope-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript to Handle Sign Selection and Fetch Horoscope -->
+    <script>
+        document.getElementById('getHoroscope').addEventListener('click', async () => {
+            const sign = document.getElementById('sign').value;
+            const response = await fetch(`/api/horoscope/${sign}`);
+            const data = await response.json();
+
+            if (data.error) {
+                document.getElementById('result').innerHTML = `<p>Error: ${data.error}</p>`;
+            } else {
+                document.getElementById('result').innerHTML = `
+                    <h2>${data.sign.toUpperCase()}</h2>
+                    <p><strong>Horoscope:</strong> ${data.horoscope}</p>
+                `;
+            }
+        });
+
+        // Add this function to handle sign clicks
+        function handleSignClick(sign) {
+            const resultDiv = document.getElementById('horoscope-result');
+            resultDiv.innerHTML = '<div class="loading">Loading horoscope...</div>';
+
+            // Call the API function
+            getDailyHoroscope(sign)
+                .then(data => {
+                    if (data && data.horoscope) {
+                        resultDiv.innerHTML = `
+                            <div class="horoscope-card">
+                                <h2>${sign.charAt(0).toUpperCase() + sign.slice(1)} Daily Horoscope</h2>
+                                <p class="date">Date: ${new Date().toLocaleDateString()}</p>
+                                <div class="horoscope-text">
+                                    <p>${data.horoscope}</p>
+                                </div>
+                                <div class="aspects">
+                                    <p><strong>Lucky Number:</strong> ${data.lucky_number || '7'}</p>
+                                    <p><strong>Lucky Color:</strong> ${data.color || 'Purple'}</p>
+                                    <p><strong>Mood:</strong> ${data.mood || 'Positive'}</p>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = '<div class="error">Unable to load horoscope. Please try again.</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    resultDiv.innerHTML = '<div class="error">Error loading horoscope. Please try again later.</div>';
+                });
+        }
+
+        // Add click event listeners to all sign buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 
+                          'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+            
+            signs.forEach(sign => {
+                const element = document.getElementById(sign);
+                if (element) {
+                    element.addEventListener('click', () => handleSignClick(sign));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
